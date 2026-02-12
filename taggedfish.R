@@ -80,3 +80,5 @@ ggplot(untagged_count, aes(x = reorder(species, -count), y=count)) +
   ylab("Number Caught")+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
+
+#end of proj
