@@ -40,8 +40,6 @@ goshdat <- fishdat %>%
   filter(Species == "GOSH")
 resudat <- fishdat %>% 
   filter(Species == "RESU")
-grwadat <- fishdat %>% 
-  filter(Species == "GRWA")
 lepomisdat <- fishdat %>% 
   filter(Species == "Lepomis")
 blcr <- fishdat %>% 
@@ -81,4 +79,3 @@ ggplot(untagged_count, aes(x = reorder(species, -count), y=count)) +
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
-#end of proj
