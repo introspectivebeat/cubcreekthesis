@@ -1,5 +1,6 @@
 library(tidyverse)
 library(scales)
+library(gridExtra)
 
 #load data
 fishdat <- read.csv("taggedfish_data.csv", header = TRUE)
@@ -79,3 +80,80 @@ ggplot(untagged_count, aes(x = reorder(species, -count), y=count)) +
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
+ggplot(fishdat, aes(x=Wt_g)) + 
+  geom_histogram(color="black", binwidth = 5)+
+  xlab("Weight (g)")+
+  ylab("Count")+
+  theme_bw()
+
+ggplot(fishdat, aes(x=TL_mm)) + 
+  geom_histogram(color="black", binwidth = 5)+
+  xlab("Length (mm)")+
+  ylab("Count")+
+  theme_bw()
+
+downstreampass <- read.csv("downstreampassdata_feb16.csv", header = TRUE)
+downstreampass <- downstreampass[-c(12:14),]
+
+passtotal <- data.frame(Species = c("Largemouth Bass","Bluegill", "Dollar Sunfish",
+                        "Green Sunfish", "Longear Sunfish", "Golden Shiner", "Yellow Bullhead"),
+                        Count = c(3, 1, 2, 4, 2, 2, 3 
+                        ))
+)
+
+ggplot(passtotal, aes(x = reorder(Species, Count), y = Count))+
+  geom_bar(stat = "identity", fill = "orange2")+
+  xlab("Species")+
+  ylab("Passage Count")+
+  scale_x_discrete(labels = label_wrap(5))+
+  theme_bw()
+
+passsep <- data.frame(Species = c("Largemouth Bass", "Largemouth Bass", "Bluegill", "Bluegill",
+                                  "Dollar Sunfish", "Dollar Sunfish", "Green Sunfish", "Green Sunfish",
+                                  "Longear Sunfish", "Longear Sunfish", "Golden Shiner", "Golden Shiner",
+                                  "Yellow Bullhead", "Yellow Bullhead"),
+                      Passage = c("A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B"),
+                      Count = c(0, 3, 0, 1, 1, 1, 3, 1, 0, 2, 0, 2, 2, 1))
+))
+
+ggplot(data=passsep, aes(x=Species, y=Count, fill=Passage)) +
+  geom_bar(stat="identity")+
+  xlab("Species")+
+  ylab("Passage Count")+
+  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_x_discrete(labels = label_wrap(5))+
+  theme_bw()
+
+passagelarge <- data.frame(Species = c("Largemouth Bass", "Largemouth Bass", "Bluegill", "Bluegill",
+                                  "Dollar Sunfish", "Dollar Sunfish", "Green Sunfish", "Green Sunfish",
+                                  "Longear Sunfish", "Longear Sunfish", "Golden Shiner", "Golden Shiner",
+                                  "Yellow Bullhead", "Yellow Bullhead"),
+                      Passage = c("Downstream", "Upstream", "Downstream", "Upstream", "Downstream", "Upstream",
+                                  "Downstream", "Upstream", "Downstream", "Upstream", "Downstream", "Upstream",
+                                  "Downstream", "Upstream"),
+                      Count = c(2, 1, 1, 0, 1, 0, 1, 0, 0, 2, 0, 2, 0, 1))
+))
+
+passlargebar <- ggplot(data=passagelarge, aes(x=Species, y=Count, fill=Passage)) +
+  geom_bar(stat="identity")+
+  xlab("Species")+
+  ylab("Passage Count")+
+  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_x_discrete(labels = label_wrap(5))+
+  theme_bw()
+
+passagesmall <- data.frame(Species = c("Green Sunfish", "Green Sunfish", "Dollar Sunfish",
+                                       "Dollar Sunfish", "Yellow Bullhead", "Yellow Bullhead"),
+                           Passage = c("Downstream", "Upstream", "Downstream", "Upstream", 
+                                      "Downstream", "Upstream"),
+                           Count = c(0, 3, 0, 1, 1, 2))
+
+passsmallbar <- ggplot(data=passagesmall, aes(x=Species, y=Count, fill=Passage)) +
+  geom_bar(stat="identity")+
+  xlab("Species")+
+  ylab("Passage Count")+
+  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_x_discrete(labels = label_wrap(5))+
+  theme_bw()
+
+grid.arrange(passsmallbar, passlargebar, ncol=2)
