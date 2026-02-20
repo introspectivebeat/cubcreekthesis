@@ -56,7 +56,7 @@ tagcount <- data.frame(
 )
 
 ggplot(tagcount, aes(x = reorder(species, -tagged), y=tagged)) + 
-  geom_bar(stat = "identity", fill = "orange2")+
+  geom_bar(stat = "identity", fill = "darkorange3")+
   xlab("Species")+
   ylab("Number Tagged")+
   scale_x_discrete(labels = label_wrap(5))+
@@ -74,7 +74,7 @@ untagged_count <- data.frame(
 )
 
 ggplot(untagged_count, aes(x = reorder(species, -count), y=count)) + 
-  geom_bar(stat = "identity", fill = "orange2")+
+  geom_bar(stat = "identity", fill = "darkorange3")+
   xlab("Species")+
   ylab("Number Caught")+
   scale_x_discrete(labels = label_wrap(5))+
@@ -99,10 +99,9 @@ passtotal <- data.frame(Species = c("Largemouth Bass","Bluegill", "Dollar Sunfis
                         "Green Sunfish", "Longear Sunfish", "Golden Shiner", "Yellow Bullhead"),
                         Count = c(3, 1, 2, 4, 2, 2, 3 
                         ))
-)
 
 ggplot(passtotal, aes(x = reorder(Species, Count), y = Count))+
-  geom_bar(stat = "identity", fill = "orange2")+
+  geom_bar(stat = "identity", fill = "darkcyan")+
   xlab("Species")+
   ylab("Passage Count")+
   scale_x_discrete(labels = label_wrap(5))+
@@ -114,13 +113,13 @@ passsep <- data.frame(Species = c("Largemouth Bass", "Largemouth Bass", "Bluegil
                                   "Yellow Bullhead", "Yellow Bullhead"),
                       Passage = c("A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B"),
                       Count = c(0, 3, 0, 1, 1, 1, 3, 1, 0, 2, 0, 2, 2, 1))
-))
+)
 
 ggplot(data=passsep, aes(x=Species, y=Count, fill=Passage)) +
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_fill_manual(values=c("peachpuff2", "darkorange3"))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
@@ -132,13 +131,12 @@ passagelarge <- data.frame(Species = c("Largemouth Bass", "Largemouth Bass", "Bl
                                   "Downstream", "Upstream", "Downstream", "Upstream", "Downstream", "Upstream",
                                   "Downstream", "Upstream"),
                       Count = c(2, 1, 1, 0, 1, 0, 1, 0, 0, 2, 0, 2, 0, 1))
-))
 
 passlargebar <- ggplot(data=passagelarge, aes(x=Species, y=Count, fill=Passage)) +
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_fill_manual(values=c('peachpuff2','darkorange3'))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
@@ -152,7 +150,7 @@ passsmallbar <- ggplot(data=passagesmall, aes(x=Species, y=Count, fill=Passage))
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c('gray45','orange2'))+
+  scale_fill_manual(values=c('peachpuff2','darkorange3'))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
