@@ -46,7 +46,7 @@ lepomisdat <- fishdat %>%
 blcr <- fishdat %>% 
   filter(Species == "BLCR")
 
-
+##### fish data #####
 tagcount <- data.frame(
   species=c("Leuciscidae spp.","Cyprinella spp.","Bluntface Shiner","Golden Shiner",
          "Western Creek Chubsucker", "Yellow Bullhead", "Brown Madtom", "Lepomis spp.",
@@ -54,6 +54,48 @@ tagcount <- data.frame(
          "Redear Sunfish", "Largemouth Bass", "Black Crappie"),  
   tagged=c(13, 7, 69, 12, 12, 66, 1, 9, 89, 159, 67, 50, 2, 18, 1)
 )
+
+#LENGTH:
+taglengthsummary <- fishdat %>%
+  group_by(Species) %>%
+  summarise(
+    sd = sd(TL_mm, na.rm = TRUE),
+    TL_mm = mean(TL_mm)
+  )
+
+speciesorder <- c("Leuciscidae", "Cyprinella", "Bluntface Shiner", "Golden Shiner",
+                  "Western Creek Chubsucker", "Yellow Bullhead", "Brown Madtom", 
+                  "Lepomis", "Green Sunfish", "Bluegill", "Dollar Sunfish", 
+                  "Longear Sunfish", "Redear Sunfish", "Largemouth Bass", "Black Crappie")
+fishdat$Species <- factor(fishdat$Species, levels = rev(speciesorder))
+
+length_tagged_plot <- ggplot(fishdat, aes(x = Species, y = TL_mm)) +
+  geom_jitter(position = position_jitter(0.2), color = "darkgrey") + 
+  geom_pointrange(aes(ymin = TL_mm-sd, ymax = TL_mm+sd),data = taglengthsummary,
+                  color = "darkorange3", size = 0.5, linewidth = 1)+
+  xlab("Species")+
+  ylab("Total Length (mm)")+
+  theme_bw()
+
+length_tagged_plot + coord_flip()
+
+#WEIGHT:
+tagweightsummary <- fishdat %>%
+  group_by(Species) %>%
+  summarise(
+    sd = sd(Wt_g, na.rm = TRUE),
+    Wt_g = mean(Wt_g, na.rm = TRUE)
+  )
+
+weight_tagged_plot <- ggplot(fishdat, aes(x = Species, y = Wt_g)) +
+  geom_jitter(position = position_jitter(0.2), color = "darkgrey") + 
+  geom_pointrange(aes(ymin = Wt_g-sd, ymax = Wt_g+sd),data = tagweightsummary,
+                  color = "darkorange3", size = 0.5, linewidth = 1)+
+  xlab("Species")+
+  ylab("Weight (g)")+
+  theme_bw()
+
+weight_tagged_plot + coord_flip()
 
 ggplot(tagcount, aes(x = reorder(species, -tagged), y=tagged)) + 
   geom_bar(stat = "identity", fill = "darkorange3")+
@@ -92,6 +134,7 @@ ggplot(fishdat, aes(x=TL_mm)) +
   ylab("Count")+
   theme_bw()
 
+##### passages #####
 downstreampass <- read.csv("downstreampassdata_feb16.csv", header = TRUE)
 downstreampass <- downstreampass[-c(12:14),]
 
@@ -113,13 +156,12 @@ passsep <- data.frame(Species = c("Largemouth Bass", "Largemouth Bass", "Bluegil
                                   "Yellow Bullhead", "Yellow Bullhead"),
                       Passage = c("A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B", "A", "B"),
                       Count = c(0, 3, 0, 1, 1, 1, 3, 1, 0, 2, 0, 2, 2, 1))
-)
 
 ggplot(data=passsep, aes(x=Species, y=Count, fill=Passage)) +
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c("peachpuff2", "darkorange3"))+
+  scale_fill_manual(values=c("peachpuff3", "darkorange3"))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
@@ -136,7 +178,7 @@ passlargebar <- ggplot(data=passagelarge, aes(x=Species, y=Count, fill=Passage))
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c('peachpuff2','darkorange3'))+
+  scale_fill_manual(values=c('peachpuff3','darkorange3'))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
@@ -150,7 +192,7 @@ passsmallbar <- ggplot(data=passagesmall, aes(x=Species, y=Count, fill=Passage))
   geom_bar(stat="identity")+
   xlab("Species")+
   ylab("Passage Count")+
-  scale_fill_manual(values=c('peachpuff2','darkorange3'))+
+  scale_fill_manual(values=c('peachpuff3','darkorange3'))+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
 
