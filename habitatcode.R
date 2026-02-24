@@ -11,66 +11,67 @@ coverdat <- read.csv("coverdat.csv", header = TRUE)
 
 ##### depth and velocity #####
 availdat <- read.csv("availabilitydat.csv", header = TRUE)
+availdat$Vel_m <- as.numeric(availdat$Vel_m)
 availonly <- availdat %>% 
   filter(Type == "Availability")
 useonly <- availdat %>% 
   filter(Type == "Use")
 
-ggplot(useonly, aes(x = Velocity_ft_s))+
-  geom_histogram(binwidth = 0.22, color = "black", fill = "grey")+
+ggplot(useonly, aes(x = Depth_m))+
+  geom_histogram(bins = 6, color = "black", fill = "grey")+
   theme_bw()
 
-ggplot(availonly, aes(x = Velocity_ft_s))+
-  geom_histogram(binwidth = 0.22, color = "black", fill = "grey")+
+ggplot(availonly, aes(x = Depth_m))+
+  geom_histogram(bins = 10, color = "black", fill = "grey")+
   theme_bw()
 
 
-ggplot(availdat, aes(x = Type, y = Depth_ft, fill = Type))+
+ggplot(availdat, aes(x = Type, y = Depth_m, fill = Type))+
   geom_violin(linewidth = 0.8, alpha = 0.2)+
   geom_boxplot(width = 0.1)+
   scale_fill_manual(values = c("palevioletred", "peachpuff3"))+
   xlab("")+
-  ylab("Depth (ft)")+
+  ylab("Depth (m)")+
   theme_bw()
 
-ggplot(availdat, aes(x = Type, y = Velocity_ft_s, fill = Type))+
+ggplot(availdat, aes(x = Type, y = Vel_m, fill = Type))+
   geom_violin(linewidth = 0.8, alpha = 0.2)+
   geom_boxplot(width = 0.1)+
   scale_fill_manual(values = c("palevioletred", "peachpuff3"))+
   xlab("")+
-  ylab("Velocity (ft/s)")+
+  ylab("Velocity (m/s)")+
   theme_bw()
 
 
 
-ggplot(availonly, aes(x = Depth_ft))+
+ggplot(availonly, aes(x = Depth_m))+
   geom_histogram(bins = 25, fill = "peachpuff3")+
-  geom_vline(xintercept = mean(useonly$Depth_ft, na.rm = TRUE), color = "darkcyan")+
+  geom_vline(xintercept = mean(useonly$Depth_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
-ggplot(availonly, aes(x = Velocity_ft_s))+
+ggplot(availonly, aes(x = Vel_m))+
   geom_histogram(bins = 25, fill = "peachpuff3")+
-  geom_vline(xintercept = mean(useonly$Velocity_ft_s, na.rm = TRUE), color = "darkcyan")+
+  geom_vline(xintercept = mean(useonly$Vel_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
 
 #DEPTH ridgeline:
-ggplot(availdat, aes(x = Depth_ft, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 20, scale = 0.99, fill = "peachpuff3", 
+ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) + 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "peachpuff3", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
-  xlab("Depth (ft)")+
+  xlab("Depth (m)")+
   ylab("")+
   theme_ridges(center_axis_labels = TRUE, grid = TRUE)
 
 #VELOCITY ridgeline:
-ggplot(availdat, aes(x = Velocity_ft_s, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 20, scale = 0.99, fill = "peachpuff3", 
+ggplot(availdat, aes(x = Vel_m, y = Type, height = stat(density))) + 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "peachpuff3", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
-  xlab("Velocity (ft/s)")+
+  xlab("Velocity (m/s)")+
   ylab("")+
   theme_ridges(center_axis_labels = TRUE, grid = TRUE)
 
