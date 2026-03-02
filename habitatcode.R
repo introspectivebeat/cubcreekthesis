@@ -78,49 +78,39 @@ ggplot(availdat, aes(x = Vel_m, y = Type, height = stat(density))) +
 ##### cover #####
 mypal <- c("peachpuff3", "honeydew3", "palevioletred", "salmon", "darkcyan", "darkseagreen", "darkorange3", "plum3")
 
-ggplot(data=coverdat, aes(x=Cover, y=Count, fill = Species)) +
-  geom_bar(stat = "identity")+
-  scale_fill_manual(values = mypal)+
-  scale_x_discrete(labels = label_wrap(5))+
-  theme_bw()
-
 coveravail <- data.frame(Cover = availdat$Cover) 
 # Create frequency table
 coverfreqavail <- coveravail %>%
   count(Cover) %>%
   mutate(Proportion = prop.table(n)) # Add proportions
 
-coveruse <- data.frame(Cover = poddat$Cover) 
+coveruse <- data.frame(Cover = useonly$Cover) 
 # Create frequency table
 coverfrequse <- coveruse %>%
   count(Cover) %>%
   mutate(Proportion = prop.table(n)) # Add proportions
 
-add_row(coverfrequse, Cover = "Submerged Vegetation", n = 0, Proportion = 0)
-add_row(coverfreqavail, Cover = "Overhanging Bank", n = 0, Proportion = 0)
+add_row(coverfrequse, Cover = "Submersed Vegetation", n = 0, Proportion = 0)
 
 freqtot <- full_join(coverfreqavail, coverfrequse, by = "Cover") 
 
 print(freqtot)
 
 freqtotwide <- data.frame(Cover = c("Boulder", "Boulder", "Coarse Woody Debris", 
-                                    "Coarse Woody Debris", "Detritus", "Detritus", "Emergent Vegetation", 
+                                    "Coarse Woody Debris", "Emergent Vegetation", 
                                     "Emergent Vegetation", "None", "None", "Overhanging Vegetation",
-                                    "Overhanging Vegetation", "Overhanging Bank", 
-                                    "Overhanging Bank", "Submersed Vegetation", 
+                                    "Overhanging Vegetation", "Submersed Vegetation", 
                                     "Submersed Vegetation"),
                           Group = c("Use", "Availability", "Use", "Availability",
                                     "Use", "Availability",
                                     "Use", "Availability", "Use", "Availability", 
-                                    "Use", "Availability", "Use", "Availability",
                                     "Use", "Availability"), 
-                          Frequency = c(0.04761905, 0.029154519, 0.09523810, 0.029154519,
-                                        0, 0.002915452, 0.09523810, 0.029154519, 
-                                        0.38095238, 0.804664723, 0.23809524, 0.087463557,
-                                        0.14285714, 0.008746356, 0, 0.026239067))
+                          Frequency = c(0.04761905, 0.02890173, 0.09523810, 0.01734104,
+                                        0.09523810, 0.02890173, 0.38095238, 0.80346821, 
+                                        0.38095238, 0.09537572, 0, 0.02601156))
 grouporder <- c("Use", "Availability")
-coverorder <- c("Boulder", "Coarse Woody Debris", "Detritus", "Emergent Vegetation", 
-                "Overhanging Vegetation", "Overhanging Bank", "Submersed Vegetation", "None")
+coverorder <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation", 
+                "Overhanging Vegetation", "Submersed Vegetation", "None")
 freqtotwide$Group <- factor(freqtotwide$Group, levels = grouporder)
 freqtotwide$Cover <- factor(freqtotwide$Cover, levels = coverorder)
 
@@ -139,7 +129,7 @@ subfreqavail <- subavail %>%
   count(Substrate) %>%
   mutate(Proportion = prop.table(n)) # Add proportions
 
-subuse <- data.frame(Substrate = poddat$Substrate) 
+subuse <- data.frame(Substrate = useonly$Substrate) 
 # Create frequency table
 subfrequse <- subuse %>%
   count(Substrate) %>%
@@ -156,8 +146,8 @@ freqsubtotwide <- data.frame(Substrate = c("Boulder", "Boulder", "Sand", "Sand",
                                         "Silt", "Silt"),
                           Group = c("Use", "Availability", "Use", "Availability",
                                     "Use", "Availability"), 
-                          Frequency = c(0.04761905, 0.02623907, 0.14285714, 0.14868805,
-                                        0.80952381, 0.82507289))
+                          Frequency = c(0.04761905, 0.02601156, 0.14285714, 0.15028902,
+                                        0.80952381, 0.82369942))
 grouporder <- c("Use", "Availability")
 suborder <- c("Silt", "Sand", "Boulder")
 freqsubtotwide$Group <- factor(freqsubtotwide$Group, levels = grouporder)
