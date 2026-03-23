@@ -17,15 +17,14 @@ library(adehabitatHS)
 sedused <- c(17, 3, 1)
 sednames <- c("Silt", "Sand", "Boulder")
 names(sedused) <- c("Silt", "Sand", "Boulder")
-sedavail <- c(0.83, 0.15, 0.02)
-sedavail2 <- c(268, 49, 8)
+sedavail <- c(0.86315789, 0.12000000, 0.01684211)
+sedavail2 <- c(410, 57, 8)
 names(sedavail) <- names(sedused)
 sedresults <- widesI(sedused, sedavail, avknown = TRUE, alpha = 0.05)
 plot(sedresults)
 print(sedresults)
 
 n_boot <- 1000
-
 u_raw <- rep(sednames, times = sedused)
 a_raw <- rep(sednames, times = sedavail2)
 
@@ -61,7 +60,7 @@ ggplot(final_summary, aes(x = reorder(Habitat, Mean_wi), y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate selection; Values < 1 indicate avoidance",
+  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
        x = "Sediment",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_bw()
@@ -76,13 +75,14 @@ ggplot(final_summary, aes(x = reorder(Habitat, Mean_wi), y = Mean_wi)) +
 # print(sedresults)
 
 #####cover#####
-covused <- c(1, 2, 2, 8, 8, 0)
-names(covused) <- c("Boulder", "CWD", "E Veg", "None",
-                    "O Veg", "S Veg")
-covnames <- c("Boulder", "CWD", "E Veg", "None",
-              "O Veg", "S Veg")
-covavail <- c(0.03, 0.01, 0.02, 0.83, 0.08, 0.03)
-covavail2 <- c(9, 4, 8, 270, 25, 9)
+covused <- c(1, 2, 2, 8, 3, 5, 0)
+names(covused) <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation", "None",
+                    "Undercut Bank", "Overhanging Vegetation", "Submersed Vegetation")
+covnames <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation", "None",
+              "Undercut Bank", "Overhanging Vegetation", "Submersed Vegetation")
+covavail <- c(0.018947368, 0.018947368, 0.128421053, 0.747368421, 0.002105263, 0.065263158,
+              0.018947368)
+covavail2 <- c(9, 9, 61, 355, 1, 31, 9)
 names(covavail) <- names(covused)
 covresults <- widesI(covused, covavail, avknown = TRUE, alpha = 0.05)
 plot(covresults)
@@ -125,7 +125,7 @@ ggplot(final_summary, aes(x = reorder(Habitat, Mean_wi), y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate selection; Values < 1 indicate avoidance",
+  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
        x = "Sediment",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_minimal()
@@ -141,8 +141,8 @@ useonly <- availdat %>%
 depthused <- c(5, 13, 2)
 names(depthused) <- c("<0.30", "0.30-0.60", ">0.60")
 depthnames <- c("<0.30", "0.30-0.60", ">0.60")
-depthavail <- c(0.77, 0.19, 0.04)
-depthavail2 <- c(250, 62, 13)
+depthavail <- c(0.754237288, 0.205508475, 0.040254237)
+depthavail2 <- c(356, 97, 19)
 names(depthavail) <- names(depthused)
 depthresults <- widesI(depthused, depthavail, avknown = TRUE, alpha = 0.05)
 plot(depthresults)
@@ -186,7 +186,7 @@ ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate selection; Values < 1 indicate avoidance",
+  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
        x = "Depth",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_bw()
@@ -195,8 +195,8 @@ ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
 velused <- c(18, 2, 0)
 names(velused) <- c("<0.15", "0.15-0.30", ">0.30")
 velnames <- c("<0.15", "0.15-0.30", ">0.30")
-velavail <- c(0.66, 0.18, 0.16) #remember to exclude NA values from percentage
-velavail2 <- c(186, 51, 43)
+velavail <- c(0.716080402, 0.16080402, 0.123115578) #remember to exclude NA values from percentage
+velavail2 <- c(285, 64, 49)
 names(velavail) <- names(velused)
 velresults <- widesI(velused, velavail, avknown = TRUE, alpha = 0.05)
 plot(velresults)
@@ -241,7 +241,7 @@ ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate selection; Values < 1 indicate avoidance",
+  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
        x = "Velocity",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_bw()

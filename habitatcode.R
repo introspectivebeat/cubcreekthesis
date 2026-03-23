@@ -5,25 +5,19 @@ library(colorBlindness)
 library(ggridges)
 
 poddat <- read.csv("poddatfull.csv", header = TRUE)
-poddat <- poddat[-c(9:17, 21, 30:32),]
+poddat <- poddat[-c(9:17, 21, 30:32, 35),] #filter to only live observations
 
-coverdat <- read.csv("coverdat.csv", header = TRUE)
+#coverdat <- read.csv("coverdat.csv", header = TRUE)
 
 ##### depth and velocity #####
 availdat <- read.csv("availabilitydat.csv", header = TRUE)
-availdat$Vel_m <- as.numeric(availdat$Vel_m)
+availdat <- availdat[,-c(17:18)] #get rid of blank columns
+str(availdat)
+
 availonly <- availdat %>% 
   filter(Type == "Availability")
 useonly <- availdat %>% 
   filter(Type == "Use")
-
-ggplot(useonly, aes(x = Depth_m))+
-  geom_histogram(bins = 6, color = "black", fill = "grey")+
-  theme_bw()
-
-ggplot(availonly, aes(x = Depth_m))+
-  geom_histogram(bins = 10, color = "black", fill = "grey")+
-  theme_bw()
 
 
 ggplot(availdat, aes(x = Type, y = Depth_m, fill = Type))+
@@ -32,25 +26,36 @@ ggplot(availdat, aes(x = Type, y = Depth_m, fill = Type))+
   scale_fill_manual(values = c("palevioletred", "peachpuff3"))+
   xlab("")+
   ylab("Depth (m)")+
+  coord_flip()+
   theme_bw()
 
-ggplot(availdat, aes(x = Type, y = Vel_m, fill = Type))+
+
+ggplot(useonly, aes(x = Depth_m))+
+  geom_histogram(bins = 20, color = "black", fill = "grey")+
+  theme_bw()
+
+ggplot(availonly, aes(x = Depth_m))+
+  geom_histogram(bins = 20, color = "black", fill = "grey")+
+  theme_bw()
+
+ggplot(availdat, aes(x = Type, y = Vel_ms, fill = Type))+
   geom_violin(linewidth = 0.8, alpha = 0.2)+
   geom_boxplot(width = 0.1)+
   scale_fill_manual(values = c("palevioletred", "peachpuff3"))+
   xlab("")+
   ylab("Velocity (m/s)")+
+  coord_flip()+
   theme_bw()
 
 
 
 ggplot(availonly, aes(x = Depth_m))+
-  geom_histogram(bins = 25, fill = "peachpuff3")+
+  geom_histogram(bins = 20, fill = "peachpuff3")+
   geom_vline(xintercept = mean(useonly$Depth_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
-ggplot(availonly, aes(x = Vel_m))+
-  geom_histogram(bins = 25, fill = "peachpuff3")+
+ggplot(availonly, aes(x = Vel_ms))+
+  geom_histogram(bins = 20, fill = "peachpuff3")+
   geom_vline(xintercept = mean(useonly$Vel_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
@@ -66,7 +71,7 @@ ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) +
   theme_ridges(center_axis_labels = TRUE, grid = TRUE)
 
 #VELOCITY ridgeline:
-ggplot(availdat, aes(x = Vel_m, y = Type, height = stat(density))) + 
+ggplot(availdat, aes(x = Vel_ms, y = Type, height = stat(density))) + 
   geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "peachpuff3", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
@@ -78,7 +83,9 @@ ggplot(availdat, aes(x = Vel_m, y = Type, height = stat(density))) +
 ##### cover #####
 mypal <- c("peachpuff3", "honeydew3", "palevioletred", "salmon", "darkcyan", "darkseagreen", "darkorange3", "plum3")
 
-coveravail <- data.frame(Cover = availdat$Cover) 
+unique(availdat$Cover)
+
+coveravail <- data.frame(Cover = availonly$Cover) 
 # Create frequency table
 coverfreqavail <- coveravail %>%
   count(Cover) %>%
@@ -90,27 +97,31 @@ coverfrequse <- coveruse %>%
   count(Cover) %>%
   mutate(Proportion = prop.table(n)) # Add proportions
 
+unique(coverfreqavail$Cover)
+unique(coverfrequse$Cover)
+
 add_row(coverfrequse, Cover = "Submersed Vegetation", n = 0, Proportion = 0)
 
 freqtot <- full_join(coverfreqavail, coverfrequse, by = "Cover") 
 
 print(freqtot)
 
-freqtotwide <- data.frame(Cover = c("Boulder", "Boulder", "Coarse Woody Debris", 
-                                    "Coarse Woody Debris", "Emergent Vegetation", 
-                                    "Emergent Vegetation", "None", "None", "Overhanging Vegetation",
-                                    "Overhanging Vegetation", "Submersed Vegetation", 
-                                    "Submersed Vegetation"),
-                          Group = c("Use", "Availability", "Use", "Availability",
-                                    "Use", "Availability",
-                                    "Use", "Availability", "Use", "Availability", 
-                                    "Use", "Availability"), 
-                          Frequency = c(0.04761905, 0.02890173, 0.09523810, 0.01734104,
-                                        0.09523810, 0.02890173, 0.38095238, 0.80346821, 
-                                        0.38095238, 0.09537572, 0, 0.02601156))
+freqtotwide <- data.frame(Cover = c("Boulder", "Boulder", "Coarse Woody Debris", "Coarse Woody Debris",
+                                    "Emergent Vegetation", "Emergent Vegetation", "None", 
+                                    "None", "Undercut Bank", "Undercut Bank", "Overhanging Vegetation",
+                                    "Overhanging Vegetation", "Submersed Vegetation", "Submersed Vegetation"),
+                          Group = c("Use", "Availability", "Use", "Availability", "Use", "Availability", 
+                                    "Use", "Availability", "Use", "Availability", "Use", "Availability", 
+                                    "Use", "Availability"),
+                          Frequency = c(0.04761905, 0.018947368, 0.09523810, 0.018947368,
+                                        0.09523810, 0.128421053, 0.38095238, 0.747368421,
+                                        0.14285714, 0.002105263, 0.23809524, 0.065263158, 0,
+                                        0.018947368))
+
+
 grouporder <- c("Use", "Availability")
-coverorder <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation", 
-                "Overhanging Vegetation", "Submersed Vegetation", "None")
+coverorder <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation",
+                "Overhanging Vegetation", "Submersed Vegetation", "Undercut Bank", "None")
 freqtotwide$Group <- factor(freqtotwide$Group, levels = grouporder)
 freqtotwide$Cover <- factor(freqtotwide$Cover, levels = coverorder)
 
@@ -123,7 +134,7 @@ ggplot(data=freqtotwide, aes(x=Cover, y=Frequency, fill = Group)) +
 
 
 ##### substrate #####
-subavail <- data.frame(Substrate = availdat$Substrate) 
+subavail <- data.frame(Substrate = availonly$Substrate) 
 # Create frequency table
 subfreqavail <- subavail %>%
   count(Substrate) %>%
@@ -146,8 +157,8 @@ freqsubtotwide <- data.frame(Substrate = c("Boulder", "Boulder", "Sand", "Sand",
                                         "Silt", "Silt"),
                           Group = c("Use", "Availability", "Use", "Availability",
                                     "Use", "Availability"), 
-                          Frequency = c(0.04761905, 0.02601156, 0.14285714, 0.15028902,
-                                        0.80952381, 0.82369942))
+                          Frequency = c(0.04761905, 0.01684211, 0.14285714, 0.12000000,
+                                        0.80952381, 0.86315789))
 grouporder <- c("Use", "Availability")
 suborder <- c("Silt", "Sand", "Boulder")
 freqsubtotwide$Group <- factor(freqsubtotwide$Group, levels = grouporder)
