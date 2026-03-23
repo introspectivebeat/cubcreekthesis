@@ -6,6 +6,13 @@ library(adehabitatHS)
 #With sampling protocol A (SPA), selection is studied by comparing a sample of
   #used resource units with a sample or census of available resource units
 
+#note that all these methods rely on the following hypotheses: 
+  #(i) independence between animals, and 
+  #(ii) all animals are selecting habitat in the same way 
+    #(no territoriality, all animals having equal access to all available resource units, etc.)
+#the above works because these fish do not have territorial home ranges that exclude other fish
+  #all fish have access to the stream
+
 ##### sediment #####
 sedused <- c(17, 3, 1)
 sednames <- c("Silt", "Sand", "Boulder")

@@ -106,7 +106,7 @@ ggplot(tagcount, aes(x = reorder(species, -tagged), y=tagged)) +
 
 untagged_count <- data.frame(
   species = c("Leuciscidae spp.", "Green Sunfish", "Blackspotted Topminnow", 
-              "Cyprinella spp.", "Etheostoma spp.", "Largemouth Bass", "Yellow Bullhead",
+              "Cyprinella spp.", "Goldstripe Darter", "Largemouth Bass", "Yellow Bullhead",
               "Western Mosquitofish", "Bluegill", "Orangefin Shiner", "Ribbon Shiner",
               "Dollar Sunfish", "Blackstripe Topminnow", "Golden Shiner", "Bluntface Shiner",
               "Spotted Bass", "Black Crappie", "Lepomis spp.", "Longear Sunfish", "Gizzard Shad",
