@@ -11,7 +11,6 @@ poddat <- poddat[-c(9:17, 21, 30:32, 35),] #filter to only live observations
 
 ##### depth and velocity #####
 availdat <- read.csv("availabilitydat.csv", header = TRUE)
-availdat <- availdat[,-c(17:18)] #get rid of blank columns
 str(availdat)
 
 availonly <- availdat %>% 
