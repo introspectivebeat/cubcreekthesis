@@ -1,4 +1,5 @@
 library(adehabitatHS)
+library(tidyverse)
 
 #design II studies with only one observation of use per animal are 
   #a special case of design I studies

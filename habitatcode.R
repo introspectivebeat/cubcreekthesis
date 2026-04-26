@@ -3,6 +3,7 @@ library(scales)
 library(geomtextpath)
 library(colorBlindness)
 library(ggridges)
+library(dplyr)
 
 poddat <- read.csv("poddatfull.csv", header = TRUE)
 poddat <- poddat[-c(9:17, 21, 30:32, 35),] #filter to only live observations
@@ -18,6 +19,10 @@ availonly <- availdat %>%
 useonly <- availdat %>% 
   filter(Type == "Use")
 
+##### ks test #####
+ks.test(availonly$Depth_m, useonly$Depth_m)
+
+ks.test(availonly$Vel_ms, useonly$Vel_ms)
 
 ggplot(availdat, aes(x = Type, y = Depth_m, fill = Type))+
   geom_violin(linewidth = 0.8, alpha = 0.2)+
@@ -49,19 +54,19 @@ ggplot(availdat, aes(x = Type, y = Vel_ms, fill = Type))+
 
 
 ggplot(availonly, aes(x = Depth_m))+
-  geom_histogram(bins = 20, fill = "peachpuff3")+
+  geom_histogram(bins = 20, fill = "grey50")+
   geom_vline(xintercept = mean(useonly$Depth_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
 ggplot(availonly, aes(x = Vel_ms))+
-  geom_histogram(bins = 20, fill = "peachpuff3")+
+  geom_histogram(bins = 20, fill = "grey50")+
   geom_vline(xintercept = mean(useonly$Vel_m, na.rm = TRUE), color = "darkcyan")+
   theme_bw()
 
 
 #DEPTH ridgeline:
 ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "peachpuff3", 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "grey50", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
@@ -71,7 +76,7 @@ ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) +
 
 #VELOCITY ridgeline:
 ggplot(availdat, aes(x = Vel_ms, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "peachpuff3", 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "grey50", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
@@ -126,7 +131,7 @@ freqtotwide$Cover <- factor(freqtotwide$Cover, levels = coverorder)
 
 ggplot(data=freqtotwide, aes(x=Cover, y=Frequency, fill = Group)) +
   geom_bar(stat = "identity", position = "dodge")+
-  scale_fill_manual(values = c("peachpuff3", "palevioletred"))+
+  scale_fill_manual(values = c("darkgrey", "black"))+
   ylim(0, 1)+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
@@ -165,7 +170,46 @@ freqsubtotwide$Cover <- factor(freqsubtotwide$Substrate, levels = coverorder)
 
 ggplot(data=freqsubtotwide, aes(x=Substrate, y=Frequency, fill = Group)) +
   geom_bar(stat = "identity", position = "dodge")+
-  scale_fill_manual(values = c("peachpuff3", "palevioletred"))+
+  scale_fill_manual(values = c("darkgrey", "black"))+
   ylim(0, 1)+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
+
+
+##### fisher test #####
+# Sediment
+colnames(availdat)
+sedimentdata <- availdat %>% select(Substrate, Type)
+
+#contingency table
+contingency_table_sed <- table(sedimentdata$Substrate, sedimentdata$Type)
+print(contingency_table_sed)
+
+#Fisher test on cont table
+fisher_test_sed <-  fisher.test(contingency_table_sed)
+
+print(fisher_test_sed)
+
+#Cover
+colnames(availdat)
+coverdata <- availdat %>% select(Cover, Type)
+
+unique(coverdata$Cover)
+
+coverdata[coverdata$Cover %in% "Emergent Vegetation",]$Cover <- "Eveg"
+coverdata[coverdata$Cover %in% "Misc",]$Cover <- "None"
+coverdata[coverdata$Cover %in% "Overhanging Vegetation",]$Cover <- "Rveg"
+coverdata[coverdata$Cover %in% "Overhanging Bank",]$Cover <- "Ubank"
+coverdata[coverdata$Cover %in% "Coarse Woody Debris",]$Cover <- "CWD"
+unique(coverdata$Cover)
+
+#contingency table
+contingency_table_cov <- table(coverdata$Cover, coverdata$Type)
+print(contingency_table_cov)
+
+
+#Fisher test on cont table
+fisher_test_cov <-  fisher.test(contingency_table_cov)
+
+print(fisher_test_cov)
+
