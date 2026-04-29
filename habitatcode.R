@@ -4,6 +4,7 @@ library(geomtextpath)
 library(colorBlindness)
 library(ggridges)
 library(dplyr)
+library(patchwork)
 
 poddat <- read.csv("poddatfull.csv", header = TRUE)
 poddat <- poddat[-c(9:17, 21, 30:32, 35),] #filter to only live observations
@@ -35,7 +36,7 @@ ggplot(availdat, aes(x = Type, y = Depth_m, fill = Type))+
 
 
 ggplot(useonly, aes(x = Depth_m))+
-  geom_histogram(bins = 20, color = "black", fill = "grey")+
+  geom_histogram(bins = 20, color = "darkcyan", fill = "grey50")+
   theme_bw()
 
 ggplot(availonly, aes(x = Depth_m))+
@@ -65,8 +66,8 @@ ggplot(availonly, aes(x = Vel_ms))+
 
 
 #DEPTH ridgeline:
-ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "grey50", 
+depthrideg <- ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) + 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "darkorange3", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
@@ -75,8 +76,8 @@ ggplot(availdat, aes(x = Depth_m, y = Type, height = stat(density))) +
   theme_ridges(center_axis_labels = TRUE, grid = TRUE)
 
 #VELOCITY ridgeline:
-ggplot(availdat, aes(x = Vel_ms, y = Type, height = stat(density))) + 
-  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "grey50", 
+velridge <- ggplot(availdat, aes(x = Vel_ms, y = Type, height = stat(density))) + 
+  geom_density_ridges(stat = "binline", bins = 15, scale = 0.99, fill = "darkorange3", 
                       draw_baseline = TRUE)+
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_discrete(expand = expand_scale(mult = c(0.01, 1))) +
@@ -129,9 +130,9 @@ coverorder <- c("Boulder", "Coarse Woody Debris", "Emergent Vegetation",
 freqtotwide$Group <- factor(freqtotwide$Group, levels = grouporder)
 freqtotwide$Cover <- factor(freqtotwide$Cover, levels = coverorder)
 
-ggplot(data=freqtotwide, aes(x=Cover, y=Frequency, fill = Group)) +
+coverplot <- ggplot(data=freqtotwide, aes(x=Cover, y=Frequency, fill = Group)) +
   geom_bar(stat = "identity", position = "dodge")+
-  scale_fill_manual(values = c("darkgrey", "black"))+
+  scale_fill_manual(values = c("darkorange3", "darkgrey"))+
   ylim(0, 1)+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
@@ -168,12 +169,15 @@ suborder <- c("Silt", "Sand", "Boulder")
 freqsubtotwide$Group <- factor(freqsubtotwide$Group, levels = grouporder)
 freqsubtotwide$Cover <- factor(freqsubtotwide$Substrate, levels = coverorder)
 
-ggplot(data=freqsubtotwide, aes(x=Substrate, y=Frequency, fill = Group)) +
+sedplot <- ggplot(data=freqsubtotwide, aes(x=Substrate, y=Frequency, fill = Group)) +
   geom_bar(stat = "identity", position = "dodge")+
-  scale_fill_manual(values = c("darkgrey", "black"))+
+  scale_fill_manual(values = c("darkorange3", "grey50"))+
   ylim(0, 1)+
   scale_x_discrete(labels = label_wrap(5))+
   theme_bw()
+
+
+(depthrideg+velridge)/(sedplot+coverplot)
 
 
 ##### fisher test #####

@@ -1,5 +1,6 @@
 library(adehabitatHS)
 library(tidyverse)
+library(patchwork)
 
 #design II studies with only one observation of use per animal are 
   #a special case of design I studies
@@ -122,14 +123,13 @@ final_summary <- data.frame(
 
 print(final_summary)
 
-ggplot(final_summary, aes(x = reorder(Habitat, Mean_wi), y = Mean_wi)) +
+coverpref <- ggplot(final_summary, aes(x = reorder(Habitat, Mean_wi), y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
-       x = "Sediment",
+  labs(x = "Cover Type",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
-  theme_minimal()
+  theme_bw()
 
 #####depth#####
 availdat <- read.csv("availabilitydat.csv", header = TRUE)
@@ -183,12 +183,11 @@ final_summary <- data.frame(
 print(final_summary)
 final_summary$Habitat <- factor(final_summary$Habitat, levels = depthnames)
 
-ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
+depthpref <- ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
-       x = "Depth",
+  labs(x = "Depth (m)",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_bw()
 
@@ -238,13 +237,13 @@ print(final_summary)
 final_summary$Habitat <- factor(final_summary$Habitat, levels = velnames)
 
 
-ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
+velpref <- ggplot(final_summary, aes(x = Habitat, y = Mean_wi)) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "darkorange3", linewidth = 1) +
   geom_pointrange(aes(ymin = Lower_CI, ymax = Upper_CI), size = 0.8) +
   coord_flip() +
-  labs(subtitle = "Values > 1 indicate preference; Values < 1 indicate avoidance",
-       x = "Velocity",
+  labs(x = "Velocity (m/s)",
        y = "Manly's Selection Index (wi) +/- 95% CI") +
   theme_bw()
 
+depthpref/velpref/coverpref
 
